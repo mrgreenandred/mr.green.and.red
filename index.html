@@ -46,15 +46,28 @@
             z-index: 1;
         }
 
-        /* --- 3. 背景圖片 --- */
-        #main-bg {
+        /* --- 3. 場景容器 (負責等比例縮放與完整顯示) --- */
+        #scene-container {
             position: absolute;
-            top: 43%;
+            top: 50%;  /* 改成 50%，讓整個場景完美垂直置中 */
             left: 50%;
             transform: translate(-50%, -50%);
+            
+            /* 【魔法參數：確保圖片絕對不會跑出螢幕】
+               這裡的意思是：寬度預設佔螢幕的 95% (vw)，
+               但如果螢幕高度不夠時，就改用高度的 165% (vh) 來限制寬度。
+               這樣圖片就不會因為過度放大而被上下裁切掉！ */
+            width: min(100vw, 200vh); 
+            
+            max-width: 1920px; 
+            z-index: 1;
+        }
+
+        /* --- 4. 背景圖片 --- */
+        #main-bg {
+            display: block;
             width: 100%; 
-            height: auto;
-            z-index: 0;
+            height: auto; /* 讓高度自然跟著上面的 width 比例縮放 */
             opacity: 0;
             transition: opacity 1.2s ease;
         }
@@ -62,51 +75,32 @@
         #main-bg.bg-visible {
             opacity: 1 !important;
         }
-
         /* =========================================
-           【修改】移動車輛動畫設定 (Car Animation)
+           移動車輛動畫設定 (Car Animation)
            ========================================= */
         #moving-car {
             position: absolute;
             z-index: 2;
-            
-            /* 【修改 1】起始位置改到左邊外面 */
-            /* 設為負值 (例如 -300px)，確保車子一開始藏在螢幕左邊框框外 */
             left: -300px; 
-            
             top: 90%;   
             width: 200px; 
             height: auto;
-            
             opacity: 0; 
             transition: opacity 1.2s ease; 
             pointer-events: none; 
-
-            /* ★ 如果你的車子圖片原本是「車頭朝左」，現在往右跑變倒車的話，
-               請把下面這行的註解符號拿掉，讓圖片水平翻轉： */
-            /* transform: scaleX(-1); */
         }
 
         #moving-car.car-visible {
             opacity: 1 !important;
-            /* 動畫名稱改為 driveRight */
             animation: driveRight 8s linear infinite; 
         }
 
-        /* 【修改 2】定義往右跑的動作 */
         @keyframes driveRight {
-            0% {
-                transform: translateX(0); 
-                /* 如果上面有開 scaleX(-1)，這裡也要改成： transform: translateX(0) scaleX(-1); */
-            }
-            100% {
-                /* 終點：跑到畫面右邊外面 (120vw 代表跑到螢幕右側再多一點) */
-                transform: translateX(120vw); 
-                /* 如果上面有開 scaleX(-1)，這裡也要改成： transform: translateX(120vw) scaleX(-1); */
-            }
+            0% { transform: translateX(0); }
+            100% { transform: translateX(120vw); }
         }
 
-        /* --- 4. 互動物件共用設定 (Class) --- */
+        /* --- 5. 互動物件共用設定 (Class) --- */
         .obj-container {
             position: absolute;
             display: block; 
@@ -124,8 +118,8 @@
 
         .obj-container img {
             display: block;
-            width: 100%;
-            height: auto;
+            width: 100%; /* 寬度配合 a 標籤設定的百分比自動填滿 */
+            height: auto; /* 高度自動等比例 */
             border: none;
         }
         
@@ -149,70 +143,63 @@
         }
 
         /* =========================================
-           【物件位置與大小設定區】
+           【物件位置與大小設定區 (已改為百分比 %)】
+           注意：這邊的百分比現在是相對於「背景圖」，
+           你貼上後可以直接在瀏覽器微調 top 和 left
            ========================================= */
         
         /* 1. 電腦 (Computer) */
         #obj-computer {
-            top: 35%;
-            left: 41%;
-            width: 250px;
+            top: 16%;
+            left: 25%;
+            width: 25%; 
         }
 
         /* 2. 活動 (Activity) */
         #obj-activity {
-            top: 15%;
-            left: 29%;
-            width: 230px;
+            top: 30%;
+            left: 75%;
+            width: 18%; 
         }
 
         /* 3. 日曆 (Calender) */
         #obj-calender {
-            top: 19%;
-            left: 50%;
-            width: 70px;
+            top: 75%;
+            left: 35%;
+            width: 13%;  
         }
 
         /* 4. 書本右 (Book Right) */
         #obj-bookri {
-            top: 65%;
-            left: 65%;
-            width: 130px;
+            top: 35%;
+            left: 62%;
+            width: 9%;  
         }
 
         /* 5. 書本左 (Book Left) */
         #obj-bookle {
-            top: 66%;
-            left: 25%;
-            width: 180px;
+            top: 19%;
+            left: 63.5%;
+            width: 9%;  
         }
 
         /* 6. 奶茶 (milk) */
         #obj-milk {
             top: 46%;
-            left: 30%;
-            width: 55px;
+            left: 3%;
+            width: 25%;  
         }
 
-
-        /* --- 5. Logo --- */
+        /* --- 6. Logo --- */
         #main-logo {
             position: absolute;
             z-index: 10;
-            top: 40%;
-            left: 40%;
-            transform: translate(-50%, -50%) scale(1);
-            width: 500px;
-            height: auto;
-            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-            pointer-events: none;
-        }
-
-        #main-logo.logo-final-state {
             top: 30px;
             left: 40px;
-            transform: translate(0, 0) scale(0.4);
+            transform: scale(0.4);
             transform-origin: top left;
+            width: 500px;
+            height: auto;
             pointer-events: auto;
         }
 
@@ -232,43 +219,43 @@
 
     <main id="main-content">
         
-        <img id="main-bg" src="firstpic/first.png" alt="Background Room">
+        <div id="scene-container">
+            
+            <img id="main-bg" src="firstpic/first.jpg" alt="Background Room">
+
+            <a href="activity.html" id="obj-activity" class="obj-container">
+                <img src="firstpic/activity.png" class="img-bw" alt="Activity BW">
+                <img src="firstpic/activity - color.png" class="img-color" alt="Activity Color">
+            </a>
+
+            <a href="computer.html" id="obj-computer" class="obj-container">
+                <img src="firstpic/computer.png" class="img-bw" alt="Computer BW">
+                <img src="firstpic/computer-color.png" class="img-color" alt="Computer Color">
+            </a>
+
+            <a href="calender.html" id="obj-calender" class="obj-container">
+                <img src="firstpic/calender.png" class="img-bw" alt="Calender BW">
+                <img src="firstpic/calender - color.png" class="img-color" alt="Calender Color">
+            </a>
+
+            <a href="bookri.html" id="obj-bookri" class="obj-container">
+                <img src="firstpic/bookri.png" class="img-bw" alt="Book Right BW">
+                <img src="firstpic/bookri - color.png" class="img-color" alt="Book Right Color">
+            </a>
+
+            <a href="bookle.html" id="obj-bookle" class="obj-container">
+                <img src="firstpic/bookle.png" class="img-bw" alt="Book Left BW">
+                <img src="firstpic/bookle - color.png" class="img-color" alt="Book Left Color">
+            </a>
+
+            <a href="dinosaur.html" id="obj-milk" class="obj-container">
+                <img src="firstpic/milk.png" class="img-bw" alt="milk BW">
+                <img src="firstpic/milk - color.png" class="img-color" alt="milk Color">
+            </a>
+
+        </div>
 
         <img id="moving-car" src="firstpic/car.gif" alt="Moving Car">
-
-        
-
-        <a href="activity.html" id="obj-activity" class="obj-container">
-            <img src="firstpic/activity.png" class="img-bw" alt="Activity BW">
-            <img src="firstpic/activity - color.png" class="img-color" alt="Activity Color">
-        </a>
-
-        <a href="computer.html" id="obj-computer" class="obj-container">
-            <img src="firstpic/computer.png" class="img-bw" alt="Computer BW">
-            <img src="firstpic/computer-color.png" class="img-color" alt="Computer Color">
-        </a>
-
-        <a href="calender.html" id="obj-calender" class="obj-container">
-            <img src="firstpic/calender.png" class="img-bw" alt="Calender BW">
-            <img src="firstpic/calender - color.png" class="img-color" alt="Calender Color">
-        </a>
-
-        <a href="bookri.html" id="obj-bookri" class="obj-container">
-            <img src="firstpic/bookri.png" class="img-bw" alt="Book Right BW">
-            <img src="firstpic/bookri - color.png" class="img-color" alt="Book Right Color">
-        </a>
-
-        <a href="bookle.html" id="obj-bookle" class="obj-container">
-            <img src="firstpic/bookle.png" class="img-bw" alt="Book Left BW">
-            <img src="firstpic/bookle - color.png" class="img-color" alt="Book Left Color">
-        </a>
-
-        <a href="dinosaur.html" id="obj-milk" class="obj-container">
-            <img src="firstpic/milk.png" class="img-bw" alt="milk BW">
-            <img src="firstpic/milk - color.png" class="img-color" alt="milk Color">
-        </a>
-
-        <img id="main-logo" src="firstpic/logo.png" alt="Logo">
 
     </main>
 
@@ -276,7 +263,6 @@
         const introOverlay = document.getElementById('intro-overlay');
         const introVideo = document.getElementById('intro-video');
         const mainContent = document.getElementById('main-content');
-        const mainLogo = document.getElementById('main-logo');
         const mainBg = document.getElementById('main-bg');
         const body = document.body;
 
@@ -289,46 +275,34 @@
         const objBookle = document.getElementById('obj-bookle');
         const objmilk = document.getElementById('obj-milk');
 
-        // --- 新增邏輯：檢查網址是否有 ?skip=true ---
         const urlParams = new URLSearchParams(window.location.search);
         const shouldSkip = urlParams.get('skip') === 'true';
 
         if (shouldSkip) {
-            // 【情況 A：跳過影片】
             console.log("偵測到 skip 指令，跳過開場影片");
-            
-            // 直接隱藏影片層
             introOverlay.style.display = 'none';
-            introVideo.pause(); // 停止播放以防萬一
-            
-            // 直接顯示主內容
+            introVideo.pause(); 
             mainContent.classList.add('visible');
             
-            // 立即執行轉場動畫 (讓 Logo 縮小、車子跑動、物件浮現)
-            // 這裡加一點點延遲 (50ms) 確保 CSS transition 能抓到狀態變化
             setTimeout(() => {
                 startTransition();
             }, 50);
 
         } else {
-            // 【情況 B：正常播放影片】
             console.log("正常播放開場影片");
-            
             introVideo.addEventListener('ended', () => {
                 console.log("影片結束");
-                introOverlay.classList.add('hidden'); // 淡出影片層
-                mainContent.classList.add('visible'); // 淡入主內容
+                introOverlay.classList.add('hidden'); 
+                mainContent.classList.add('visible'); 
                 
                 setTimeout(() => { introOverlay.style.display = 'none'; }, 800);
                 setTimeout(() => { startTransition(); }, 1000); 
             });
         }
 
-        // --- 共用的進場動畫函式 ---
         function startTransition() {
             console.log("執行物件進場動畫");
             
-            mainLogo.classList.add('logo-final-state');
             mainBg.classList.add('bg-visible');
             movingCar.classList.add('car-visible');
 

@@ -12,7 +12,6 @@ function toggleMenu() {
             }
         });
 
-
         // ==========================================
         // 取得所有過場圖片的元素
         // ==========================================
@@ -21,7 +20,6 @@ function toggleMenu() {
         const bannerWed = document.getElementById('banner-wed');
         const bannerThu = document.getElementById('banner-thu');
         const bannerFri = document.getElementById('banner-fri');
-
 
         // --- 互動邏輯：Monday ---
         const btnTower = document.getElementById('btn-tower');
@@ -38,13 +36,11 @@ function toggleMenu() {
             txtCold.classList.add('bubble-visible');
         });
 
-
         // --- 轉場與動畫邏輯 ---
         let currentScene = 1; 
         let isTransitioning = false; 
         
-        // 【新增】用來記錄目前畫面上「正在顯示的過場圖片」
-        let activeBanner = null; 
+        let activeBanner = null; // 記錄目前畫面上「正在顯示的過場圖片」
 
         let mondayStep = 0; 
         let tuesdayStep = 0; 
@@ -60,14 +56,14 @@ function toggleMenu() {
             if (isTransitioning) return;
 
             if (e.deltaY > 0) {
-                // 【關鍵修改】：如果畫面上有過場圖片擋著，這次滾動只負責把它收起來
+                // 如果畫面上有過場圖片擋著，這次滾動只負責把它收起來
                 if (activeBanner !== null) {
                     dismissBanner();
-                    return; // 收起圖片後就結束這次滾動，不觸發後面的動畫
+                    return; 
                 }
 
                 if (currentScene === 1) { 
-                    goToSceneMonday(); 
+                    goToSceneMonday(); // 開場直接進星期一
                 }
                 else if (currentScene === 2) { 
                     playNextMondayStep();
@@ -80,11 +76,7 @@ function toggleMenu() {
                     else if (isHoveringGreen) { handleSpotlightExpand(); }
                 }
                 else if (currentScene === 5) {
-                    if (thursdayStep < 4) {
-                        playNextThursdayStep();
-                    } else {
-                        goToSceneFriday();
-                    }
+                    playNextThursdayStep();
                 }
                 else if (currentScene === 6) {
                     playNextFridayStep();
@@ -93,22 +85,21 @@ function toggleMenu() {
         });
 
         // ==========================================
-        // 【新增】收起過場圖片的共用函式
+        // 收起過場圖片的共用函式
         // ==========================================
         function dismissBanner() {
-            isTransitioning = true; // 鎖定滾輪
-            activeBanner.classList.remove('show-banner'); // 讓圖片往上收起
+            isTransitioning = true; 
+            let dismissedBanner = activeBanner; // 記下要收起的是哪張圖片
+            dismissedBanner.classList.remove('show-banner'); 
             
-            // 紀錄一下收起來的是不是星期五，因為星期五收起後要自動播放葉子動畫
-            let isFriday = (activeBanner === bannerFri); 
-            
-            activeBanner = null; // 清空紀錄，代表畫面上沒有圖片了
+            activeBanner = null; 
 
-            // 等待圖片收起的動畫結束 (約 800ms)
             setTimeout(() => { 
-                isTransitioning = false; // 解鎖滾輪
-                if (isFriday) {
-                    playNextFridayStep(); // 星期五的特殊處理
+                isTransitioning = false; 
+                
+                // 【關鍵】如果收起來的是 thu.png，代表我們正式進入星期五了，自動觸發葉子動畫
+                if (dismissedBanner === bannerThu) {
+                    playNextFridayStep(); 
                 }
             }, 800); 
         }
@@ -125,78 +116,79 @@ function toggleMenu() {
                 wedSpotlightScale += 5; 
                 spotlightImg.style.transform = `translate(-50%, -50%) scale(${wedSpotlightScale})`;
                 if (wedSpotlightScale > 40) { 
-                    goToSceneThursday();
+                    transitionToThursday(); // 星期三結束，掉下 wed.png
                 }
             }
         }
 
         // ==========================================
-        // 【修改】切換場景函式：圖片掉下後會「停留」並等待下次滾動
+        // 【修改】切換場景函式：每天結束後，掉下該天的圖片
         // ==========================================
         function goToSceneMonday() {
+            // 開場進星期一，沒有過場圖片
             isTransitioning = true;
-            bannerMon.classList.add('show-banner'); // 圖片掉落
-
-            // 等待圖片完全遮住畫面 (800ms) 後，偷偷切換背景
-            setTimeout(() => {
-                currentScene = 2;
-                document.getElementById('scene-start').classList.add('slide-up');
-                document.getElementById('scene-monday').classList.add('visible');
-                mondayStep = 0; 
-
-                // 紀錄目前擋住畫面的是星期一圖片，並解鎖滾輪等待使用者滑動
-                activeBanner = bannerMon;
-                isTransitioning = false; 
-            }, 800);
+            currentScene = 2;
+            document.getElementById('scene-start').classList.add('slide-up');
+            document.getElementById('scene-monday').classList.add('visible');
+            mondayStep = 0; 
+            setTimeout(() => { isTransitioning = false; }, 1000);
         }
 
-        function goToSceneTuesday() {
+        function transitionToTuesday() {
             isTransitioning = true;
-            bannerTue.classList.add('show-banner');
+            bannerMon.classList.add('show-banner'); // 星期一結束，掉下 mon.png
 
             setTimeout(() => {
                 currentScene = 3;
-                document.getElementById('scene-tuesday').classList.add('active');
-                
+                document.getElementById('scene-tuesday').classList.add('active'); // 背景偷偷換星期二
+                activeBanner = bannerMon; // 記錄 mon.png 擋在畫面上
+                isTransitioning = false;
+            }, 800);
+        }
+
+        function transitionToWednesday() {
+            isTransitioning = true;
+            bannerTue.classList.add('show-banner'); // 星期二結束，掉下 tue.png
+
+            setTimeout(() => {
+                currentScene = 4;
+                document.getElementById('scene-wednesday').classList.add('active'); 
                 activeBanner = bannerTue;
                 isTransitioning = false;
             }, 800);
         }
 
-        function goToSceneWednesday() {
+        function transitionToThursday() {
             isTransitioning = true;
-            bannerWed.classList.add('show-banner');
+            bannerWed.classList.add('show-banner'); // 星期三結束，掉下 wed.png
 
             setTimeout(() => {
-                currentScene = 4;
-                document.getElementById('scene-wednesday').classList.add('active'); 
-                
+                currentScene = 5;
+                document.getElementById('scene-thursday').classList.add('active');
                 activeBanner = bannerWed;
                 isTransitioning = false;
             }, 800);
         }
 
-        function goToSceneThursday() {
+        function transitionToFriday() {
             isTransitioning = true;
-            bannerThu.classList.add('show-banner');
+            console.log("切換至星期五...");
+            bannerThu.classList.add('show-banner'); // 星期四結束，掉下 thu.png
 
             setTimeout(() => {
-                currentScene = 5;
-                document.getElementById('scene-thursday').classList.add('active');
-                
+                currentScene = 6;
+                document.getElementById('scene-friday').classList.add('active'); 
                 activeBanner = bannerThu;
                 isTransitioning = false;
             }, 800);
         }
 
-        function goToSceneFriday() {
+        function transitionToEnd() {
             isTransitioning = true;
-            bannerFri.classList.add('show-banner');
+            console.log("星期五結束");
+            bannerFri.classList.add('show-banner'); // 星期五結束，掉下 fri.png
 
             setTimeout(() => {
-                currentScene = 6;
-                document.getElementById('scene-friday').classList.add('active'); 
-                
                 activeBanner = bannerFri;
                 isTransitioning = false;
             }, 800);
@@ -207,7 +199,7 @@ function toggleMenu() {
         // -----------------------
         function playNextMondayStep() {
             if (mondayStep >= 4) {
-                goToSceneTuesday();
+                transitionToTuesday(); // 星期一播完，進入掉圖片邏輯
                 return;
             }
 
@@ -254,37 +246,38 @@ function toggleMenu() {
         }
 
         function playNextTuesdayStep() {
-            if(tuesdayStep < 5) {
-                tuesdayStep++;
-                isTransitioning = true;
-                setTimeout(() => { isTransitioning = false; }, 800);
-                
-                switch(tuesdayStep) {
-                    case 1: 
-                        document.getElementById('tues-title').classList.add('text-in');
-                        setTimeout(() => { document.getElementById('tues-sub').classList.add('text-in'); }, 300);
-                        break;
-                    case 2: 
-                        document.getElementById('tues-intersac').classList.add('bg-visible');
-                        document.getElementById('tues-mrt').classList.add('bg-visible');
-                        break;
-                    case 3: 
-                        document.getElementById('grp-grandma').classList.add('grandma-walking');
-                        const flos = document.querySelectorAll('.obj-flo');
-                        setTimeout(() => { flos[0].classList.add('flo-anim'); }, 2500); 
-                        setTimeout(() => { flos[1].classList.add('flo-anim'); }, 3000); 
-                        setTimeout(() => { flos[2].classList.add('flo-anim'); }, 3500); 
-                        setTimeout(() => { flos[3].classList.add('flo-anim'); }, 4000); 
-                        break;
-                    case 4: 
-                        document.getElementById('grp-red').classList.add('red-enter');
-                        break;
-                    case 5: 
-                        document.getElementById('grp-dialogue').classList.add('dialogue-show');
-                        break;
-                }
-            } else {
-                goToSceneWednesday();
+            if(tuesdayStep >= 5) {
+                transitionToWednesday();
+                return;
+            }
+            
+            tuesdayStep++;
+            isTransitioning = true;
+            setTimeout(() => { isTransitioning = false; }, 800);
+            
+            switch(tuesdayStep) {
+                case 1: 
+                    document.getElementById('tues-title').classList.add('text-in');
+                    setTimeout(() => { document.getElementById('tues-sub').classList.add('text-in'); }, 300);
+                    break;
+                case 2: 
+                    document.getElementById('tues-intersac').classList.add('bg-visible');
+                    document.getElementById('tues-mrt').classList.add('bg-visible');
+                    break;
+                case 3: 
+                    document.getElementById('grp-grandma').classList.add('grandma-walking');
+                    const flos = document.querySelectorAll('.obj-flo');
+                    setTimeout(() => { flos[0].classList.add('flo-anim'); }, 2500); 
+                    setTimeout(() => { flos[1].classList.add('flo-anim'); }, 3000); 
+                    setTimeout(() => { flos[2].classList.add('flo-anim'); }, 3500); 
+                    setTimeout(() => { flos[3].classList.add('flo-anim'); }, 4000); 
+                    break;
+                case 4: 
+                    document.getElementById('grp-red').classList.add('red-enter');
+                    break;
+                case 5: 
+                    document.getElementById('grp-dialogue').classList.add('dialogue-show');
+                    break;
             }
         }
 
@@ -327,6 +320,11 @@ function toggleMenu() {
         }
 
         function playNextThursdayStep() {
+            if (thursdayStep >= 4) {
+                transitionToFriday();
+                return;
+            }
+            
             thursdayStep++;
             isTransitioning = true;
             setTimeout(() => { isTransitioning = false; }, 800);
@@ -352,6 +350,11 @@ function toggleMenu() {
         }
 
         function playNextFridayStep() {
+            if (fridayStep >= 8) {
+                transitionToEnd();
+                return;
+            }
+
             fridayStep++;
             isTransitioning = true;
             setTimeout(() => { isTransitioning = false; }, 1000);
@@ -463,4 +466,49 @@ function toggleMenu() {
         });
         document.getElementById('fri-stair').addEventListener('click', function(){
             this.classList.remove('anim-shake-random');
+        });
+
+        // =========================================
+        // Activity 彈窗互動邏輯
+        // =========================================
+        const btnActivity = document.getElementById('obj-activity');
+        const activityPopup = document.getElementById('activity-popup');
+        
+        // 按照 6 到 1 的順序排好，方便等一下「依序發牌」
+        const popLayers = [
+            document.getElementById('pop-layer6'),
+            document.getElementById('pop-layer5'),
+            document.getElementById('pop-layer4'),
+            document.getElementById('pop-layer3'),
+            document.getElementById('pop-layer2'),
+            document.getElementById('pop-layer1')
+        ];
+
+        // 1. 點擊 activity 按鈕：打開彈窗並依序顯示圖片
+        btnActivity.addEventListener('click', function(e) {
+            e.preventDefault(); // 防止網址跳轉
+            activityPopup.classList.add('show-popup'); // 背景淡入
+            
+            // 延遲發牌動畫 (每隔 0.15 秒出現一張，6 -> 5 -> 4 -> 3 -> 2 -> 1)
+            popLayers.forEach((layer, index) => {
+                setTimeout(() => {
+                    layer.classList.add('layer-visible');
+                }, 300 + (index * 150)); 
+            });
+        });
+
+        // 2. 點擊圖片：讓它消失。如果是最後一張 (6.png)，就關閉整個彈窗
+        popLayers.forEach((layer, index) => {
+            layer.addEventListener('click', function() {
+                // 點擊後把自己隱藏
+                this.classList.remove('layer-visible');
+                
+                // 檢查是不是點到 6.png (在陣列裡 index 是 0)
+                if (index === 0) {
+                    // 等 6.png 縮小的動畫跑完 (約 0.4秒) 後，關閉整個彈窗背景
+                    setTimeout(() => {
+                        activityPopup.classList.remove('show-popup');
+                    }, 400); 
+                }
+            });
         });

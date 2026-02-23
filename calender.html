@@ -294,6 +294,93 @@
             .bg-gray-intro { padding-top: 150px; } 
         }
 
+        /* =========================================
+           Activity 彈窗與六張圖層設定
+           ========================================= */
+        #activity-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.85); /* 半透明白底覆蓋 */
+            z-index: 20000; /* 超高層級，保證蓋住所有場景 */
+            opacity: 0;
+            pointer-events: none; /* 隱藏時不能點擊 */
+            transition: opacity 0.5s ease;
+        }
+
+        #activity-popup.show-popup {
+            opacity: 1;
+            pointer-events: auto; /* 顯示時恢復點擊 */
+        }
+
+        .popup-layer {
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.8); /* 一開始縮小一點，出現時會有放大的動態感 */
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            cursor: pointer;
+            pointer-events: none; 
+        }
+
+        /* 圖片出現時的動畫狀態 */
+        .popup-layer.layer-visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto; /* 出現後才能被點擊 */
+        }
+
+        /* --- 套用你設定好的六張圖片專屬位置與大小 --- */
+        
+        /* 第 1 張 (最上層，最先被點擊) */
+        #pop-layer1 { 
+            z-index: 16; 
+            top: 16%;   
+            left: 40%;  
+            width: 27%; 
+        }
+
+        /* 第 2 張 */
+        #pop-layer2 { 
+            z-index: 15; 
+            top: 40%; 
+            left: 27%; 
+            width: 35%; 
+        }
+
+        /* 第 3 張 */
+        #pop-layer3 { 
+            z-index: 14; 
+            top: 23%; 
+            left: 60%; 
+            width: 23%; 
+        }
+
+        /* 第 4 張 */
+        #pop-layer4 { 
+            z-index: 13; 
+            top: 65%; 
+            left: 10%; 
+            width: 25%; 
+        }
+
+        /* 第 5 張 */
+        #pop-layer5 { 
+            z-index: 12; 
+            top: 50%; 
+            left: 60%; 
+            width: 20%; 
+        }
+        
+        /* 第 6 張 (最底層) */
+        #pop-layer6 { 
+            z-index: 11; 
+            top: 30%; 
+            left: 18%; 
+            width: 20%; 
+        }
+
     </style>
 </head>
 <body>
@@ -306,7 +393,22 @@
                 <img src="firstpic/hover.png" alt="Menu Hover" class="hover-img">
             </div>
             <div class="menu-list" id="menuList">
-                <a href="bookri.html">關於</a><a href="#">周邊</a><a href="activity.html">活動</a><a href="calender.html">品牌</a><a href="computer.html">地圖</a>
+                <a href="bookri.html">關於</a><a href="#">周邊</a>
+                
+                <a href="#" id="obj-activity" class="obj-container">活動</a>
+                <div id="activity-popup">
+                    <img class="popup-layer" id="pop-layer6" src="thirdpic/6.png">
+                    <img class="popup-layer" id="pop-layer5" src="thirdpic/5.png">
+                    <img class="popup-layer" id="pop-layer4" src="thirdpic/4.png">
+                    <img class="popup-layer" id="pop-layer3" src="thirdpic/3.png">
+                    <img class="popup-layer" id="pop-layer2" src="thirdpic/2.png">
+                    <img class="popup-layer" id="pop-layer1" src="thirdpic/1.png">
+                </div>
+
+
+                
+                
+                <a href="calender.html">品牌</a><a href="computer.html">地圖</a>
             </div>
         </div>
     </div>
@@ -417,6 +519,52 @@
         
         // 頁面載入時先執行一次，確保重新整理時在視野內的元素會顯示
         revealOnScroll();
+
+        // =========================================
+        // Activity 彈窗互動邏輯
+        // =========================================
+        const btnActivity = document.getElementById('obj-activity');
+        const activityPopup = document.getElementById('activity-popup');
+        
+        // 按照 6 到 1 的順序排好，方便等一下「依序發牌」
+        const popLayers = [
+            document.getElementById('pop-layer6'),
+            document.getElementById('pop-layer5'),
+            document.getElementById('pop-layer4'),
+            document.getElementById('pop-layer3'),
+            document.getElementById('pop-layer2'),
+            document.getElementById('pop-layer1')
+        ];
+
+        // 1. 點擊 activity 按鈕：打開彈窗並依序顯示圖片
+        btnActivity.addEventListener('click', function(e) {
+            e.preventDefault(); // 防止網址跳轉
+            activityPopup.classList.add('show-popup'); // 背景淡入
+            
+            // 延遲發牌動畫 (每隔 0.15 秒出現一張，6 -> 5 -> 4 -> 3 -> 2 -> 1)
+            popLayers.forEach((layer, index) => {
+                setTimeout(() => {
+                    layer.classList.add('layer-visible');
+                }, 300 + (index * 150)); 
+            });
+        });
+
+        // 2. 點擊圖片：讓它消失。如果是最後一張 (6.png)，就關閉整個彈窗
+        popLayers.forEach((layer, index) => {
+            layer.addEventListener('click', function() {
+                // 點擊後把自己隱藏
+                this.classList.remove('layer-visible');
+                
+                // 檢查是不是點到 6.png (在陣列裡 index 是 0)
+                if (index === 0) {
+                    // 等 6.png 縮小的動畫跑完 (約 0.4秒) 後，關閉整個彈窗背景
+                    setTimeout(() => {
+                        activityPopup.classList.remove('show-popup');
+                    }, 400); 
+                }
+            });
+        });
+
     </script>
 
 </body>

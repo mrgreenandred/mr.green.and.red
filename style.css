@@ -20,19 +20,90 @@
         }
 
         /* =========================================
-           自訂滑鼠游標設定
+           Activity 彈窗與六張圖層設定
            ========================================= */
-        /* 1. 把全站預設的箭頭改成你的圖片 */
-        body, html {
-            /* 假設你的圖片放在 firstpic 資料夾，請確認路徑是否正確 */
-            /* 後面的 , auto 是保險機制：如果圖片壞掉，就顯示預設游標 */
-            cursor: url('firstpic/pointgreen.png'), auto; 
+        #activity-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.85); /* 半透明白底覆蓋 */
+            z-index: 20000; /* 超高層級，保證蓋住所有場景 */
+            opacity: 0;
+            pointer-events: none; /* 隱藏時不能點擊 */
+            transition: opacity 0.5s ease;
         }
 
-        /* 2. 當滑鼠移到「可點擊的按鈕或物件」上時，也要保持是你的游標 */
-        a, button, .obj-container, .hamburger-icon {
-            /* 後面的 , pointer 是一樣的保險機制 */
-            cursor: url('firstpic/pointgreen.png'), pointer !important;
+        #activity-popup.show-popup {
+            opacity: 1;
+            pointer-events: auto; /* 顯示時恢復點擊 */
+        }
+
+        .popup-layer {
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.8); /* 一開始縮小一點，出現時會有放大的動態感 */
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            cursor: pointer;
+            pointer-events: none; 
+        }
+
+        /* 圖片出現時的動畫狀態 */
+        .popup-layer.layer-visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto; /* 出現後才能被點擊 */
+        }
+
+        /* --- 套用你設定好的六張圖片專屬位置與大小 --- */
+        
+        /* 第 1 張 (最上層，最先被點擊) */
+        #pop-layer1 { 
+            z-index: 16; 
+            top: 16%;   
+            left: 40%;  
+            width: 27%; 
+        }
+
+        /* 第 2 張 */
+        #pop-layer2 { 
+            z-index: 15; 
+            top: 40%; 
+            left: 27%; 
+            width: 35%; 
+        }
+
+        /* 第 3 張 */
+        #pop-layer3 { 
+            z-index: 14; 
+            top: 23%; 
+            left: 60%; 
+            width: 23%; 
+        }
+
+        /* 第 4 張 */
+        #pop-layer4 { 
+            z-index: 13; 
+            top: 65%; 
+            left: 10%; 
+            width: 25%; 
+        }
+
+        /* 第 5 張 */
+        #pop-layer5 { 
+            z-index: 12; 
+            top: 50%; 
+            left: 60%; 
+            width: 20%; 
+        }
+        
+        /* 第 6 張 (最底層) */
+        #pop-layer6 { 
+            z-index: 11; 
+            top: 30%; 
+            left: 18%; 
+            width: 20%; 
         }
 
         /* =========================================

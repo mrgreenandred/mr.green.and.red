@@ -151,8 +151,38 @@
         #sat-inter { position: absolute; bottom: 0; right: -50%; width: 30%; opacity: 0; transition: all 1s ease; }
         #sat-inter.slide-in { right: 0; opacity: 1; }
         #sat-red { position: absolute; bottom: 8%; left: 27%; width: 5%; opacity: 0; transition: opacity 1s ease; }
-        #sat-cat-link { position: absolute; top: -100%; left: 65%; width: 15%; opacity: 0; transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 5; }
-        #sat-cat { width: 30%; top: -100%; left: 65%; cursor: pointer; transition: transform 0.2s; }
+        #sat-cat-link { 
+            position: absolute; 
+            top: -100%;     /* 藏在螢幕上方 */
+            left: 65%; 
+            width: 15%; 
+            opacity: 0;     /* 完全透明 */
+            /* 這是貓咪「掉下來」時的彈跳動畫速度 */
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            z-index: 5; 
+        }
+
+        #sat-cat { 
+            width: 30%;    /* 讓貓咪圖片填滿父容器 #sat-cat-link */
+            display: block; 
+            cursor: pointer; 
+            transition: transform 0.2s; /* 這是保留給您做 hover 放大用的 */
+        }
+        /* 當 JS 觸發 drop-in 時，貓咪掉下來並顯示 */
+        #sat-cat-link.drop-in {
+            top: 20%;       /* 掉到畫面中 20% 的高度 (您可以自己微調數字) */
+            opacity: 1;     /* 取消透明，顯示出來 */
+            
+            /* 掉下來 1 秒後，開始執行漂浮動畫 */
+            animation: catFloat 3s ease-in-out 1s infinite;
+        }
+
+        /* 定義貓咪漂浮的上下軌跡 */
+        @keyframes catFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); /* 向上浮動 15px */ }
+            100% { transform: translateY(0px); }
+        }
         #sat-word61 { position: absolute; bottom: 75%; left: 70%; width: 6%; opacity: 0; transition: opacity 1s ease; }
 
         /* --- Sunday --- */

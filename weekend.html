@@ -224,6 +224,24 @@
         #sun-bird1 { position: absolute; top: 40%; left: 12%; width: 18%; opacity: 0; transition: all 1.5s ease; pointer-events: none; }
         #sun-bird1.fly-left { left: -50%; opacity: 0; }
 
+        /* =========================================
+        Post (信箱/郵筒 post0.png) 的專屬彈出設定
+        ========================================= */
+        #wrap-post .popup-img.pop-active {
+            top: 0%;    /* 調整彈出時的上下位置 */
+            left: -150%;     /* 調整彈出時的左右位置 */
+            transform: translateX(-50%) scale(1); /* 調整放大縮小比例 */
+        }
+
+        /* =========================================
+        Bird (鳥 bird0.png) 的專屬彈出設定
+        ========================================= */
+        #wrap-bird .popup-img.pop-active {
+            top: -200%;    /* 調整彈出時的上下位置 */
+            left: 20%;     /* 調整彈出時的左右位置 */
+            transform: translateX(-50%) scale(0.3); /* 調整放大縮小比例 */
+        }
+
         /* --- 新增：故事圖片頁 --- */
         #scene-story-img { z-index: 15; background-color: #ffffff; display: flex; justify-content: center; align-items: center; }
         #story-type-img { width: 28%; max-width: 800px; height: auto; opacity: 0; transition: opacity 1s ease; }

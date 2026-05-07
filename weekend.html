@@ -185,6 +185,33 @@
         }
         #sat-word61 { position: absolute; bottom: 75%; left: 70%; width: 6%; opacity: 0; transition: opacity 1s ease; }
 
+        /* =========================================
+        Building 1 (build10.png) 的專屬彈出設定
+        ========================================= */
+        #build1-box .popup-img.pop-active {
+            top: -100%;    /* 調整垂直位置 (負值越大越往上) */
+            left: 50%;     /* 調整水平位置 (預設 50% 居中) */
+            transform: translateX(-50%) scale(1.2); /* 調整大小 (這裡示範放大 1.2 倍) */
+        }
+
+        /* =========================================
+        Building 2 (build20.png) 的專屬彈出設定
+        ========================================= */
+        #build2-box .popup-img.pop-active {
+            top: -250%;    
+            left: 60%;     /* 如果想讓它往左偏一點，可以改小於 50% */
+            transform: translateX(-50%) scale(1.5); /* 這裡示範放大 1.5 倍 */
+        }
+
+        /* =========================================
+        Building 3 (build30.png) 的專屬彈出設定
+        ========================================= */
+        #build3-box .popup-img.pop-active {
+            top: -150%;    
+            left: 40%;     /* 如果想讓它往右偏一點，可以改大於 50% */
+            transform: translateX(-50%) scale(0.8); /* 這裡示範縮小為 0.8 倍 */
+        }
+
         /* --- Sunday --- */
         #scene-sunday { z-index: 20; background-color: #fff; }
         #sun-word7 { position: absolute; top: 18%; left: 18%; transform: translateX(-50%); width: 11%; opacity: 0; transition: opacity 1s ease; }

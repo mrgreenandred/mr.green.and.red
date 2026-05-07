@@ -283,7 +283,7 @@
         .obj-bag { width: 60px; position: absolute; bottom: 3px; right: -110px; }
         .red-enter { opacity: 1; right: 31%; }
         .dialogue-container { position: absolute; bottom: 40%; right: 10%; opacity: 0; transform: scale(0.5); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .obj-line { width: 30px; position: absolute; bottom: -50px; right: 220px;}
+        .obj-line { width: 30px; position: absolute; bottom: -50px; right: 230px;}
         .obj-word { width: 100px; position: absolute; bottom: -100px; right: 350px;}
         .dialogue-show { opacity: 1; transform: scale(1); }
         .obj-bubble-tues { position: absolute; opacity: 0; transition: opacity 0.5s ease; z-index: 20; pointer-events: none; width: 230px; height: auto; }

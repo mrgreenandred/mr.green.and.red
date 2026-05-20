@@ -64,12 +64,12 @@
             font-family: 'Cubic', sans-serif;
         }
 
-        /* --- 修改：漢堡按鈕區域 --- */
+        /* 漢堡按鈕區域 */
         .hamburger-icon {
-            width: 35px;  /* 維持原本按鈕大小 */
+            width: 35px;  
             height: 30px;
             cursor: pointer;
-            position: relative; /* 讓內部圖片可以絕對定位 */
+            position: relative; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -96,28 +96,21 @@
 
         /* Hover 圖片樣式 (置中且放大) */
         .hover-img {
-            width: 55px;  /* 圖片寬度 (比按鈕容器大) */
+            width: 55px;  
             height: auto;
             object-fit: contain;
-            display: none; /* 預設隱藏 */
+            display: none; 
             position: absolute;
-            
-            /* 絕對置中 */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
 
         /* === 互動顯示邏輯 === */
-        
-        /* 1. 滑鼠移入：隱藏線條，顯示圖片 */
         .hamburger-icon:hover .lines-wrapper { display: none; }
         .hamburger-icon:hover .hover-img { display: block; }
-
-        /* 2. 選單開啟 (active)：隱藏線條，顯示圖片 */
         .menu-container.active .hamburger-icon .lines-wrapper { display: none; }
         .menu-container.active .hamburger-icon .hover-img { display: block; }
-
         
         /* --- 展開後的選單列表 --- */
         .menu-list {
@@ -158,37 +151,81 @@
             color: #000;
         }
 
-        /* --- 遊戲區域 CSS --- */
+        /* =========================================
+           Activity 彈窗與六張圖層設定
+           ========================================= */
+        #activity-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.85); 
+            z-index: 20000; 
+            opacity: 0;
+            pointer-events: none; 
+            transition: opacity 0.5s ease;
+        }
+
+        #activity-popup.show-popup {
+            opacity: 1;
+            pointer-events: auto; 
+        }
+
+        .popup-layer {
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.8); 
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            cursor: pointer;
+            pointer-events: none; 
+        }
+
+        .popup-layer.layer-visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto; 
+        }
+
+        #pop-layer1 { z-index: 16; top: 16%; left: 40%; width: 27%; }
+        #pop-layer2 { z-index: 15; top: 40%; left: 27%; width: 35%; }
+        #pop-layer3 { z-index: 14; top: 23%; left: 60%; width: 23%; }
+        #pop-layer4 { z-index: 13; top: 65%; left: 10%; width: 25%; }
+        #pop-layer5 { z-index: 12; top: 50%; left: 60%; width: 20%; }
+        #pop-layer6 { z-index: 11; top: 30%; left: 18%; width: 20%; }
+
+        /* --- 3. 遊戲區域 CSS (完全保留原始設定) --- */
         #gameArea {
-            margin: auto; 
+            margin: auto; /* 讓遊戲畫面在視窗置中 */
             width: 800px;
             height: 300px;
             position: relative;
             background-image: url("https://github.com/yen143/u/blob/main/bg3.png?raw=true");
             background-repeat: no-repeat;
             background-position: center top;
-            background-size: 100% 75%;
+            background-size: 100% 75%; 
+            overflow: hidden; /* 避免障礙物飛出框外時造成卷軸 */
             border: 2px solid #ccc; 
-            background-color: #fff;
-            overflow: hidden;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
         #dino, #obstacle {
             position: absolute;
-            z-index: 5;
+            z-index: 5; 
         }
 
         #dino {
+            position: absolute;
             bottom: 20px;
-            right: 50px;
+            right: 50px; /* 原本設定：綠人在右邊 */
             width: 50px;
             height: 70px;
         }
 
         #obstacle {
+            position: absolute;
             bottom: 15px;
-            left: -50px; 
+            left: -50px; /* 原本設定：障礙物在左邊 */
             width: 50px;
             height: 50px;
         }
@@ -202,23 +239,22 @@
             color: black;
             font-family: Arial, sans-serif;
             z-index: 10;
-            background: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.9); 
             padding: 12px 25px;
             border-radius: 10px;
             cursor: pointer;
-            border: 1px solid #999;
         }
 
         #scoreDisplay {
-            display: none; 
-            font-family: "Arial", "微軟正黑體", sans-serif;
+            display: none;
+            font-family: Arial, "微軟正黑體", sans-serif;
             position: absolute;
-            top: 10px; 
+            top: 10px;
             left: 10px;
             font-size: 25px;
-            font-weight: bold;
-            color: #333;
+            color: black;
             z-index: 5;
+            font-weight: bold;
         }
 
         .cloud {
@@ -226,113 +262,27 @@
             width: 50px;
             height: auto;
             opacity: 0.9;
-            display: none; 
+            display: none;
         }
 
         .near { z-index: 3; opacity: 1; }
-        .far { z-index: 1; opacity: 0.8; transform: scale(0.8); }
+        .far { z-index: 1; opacity: 1; }
 
         #ground {
             position: absolute;
-            bottom: 20px;
+            bottom: 20px; 
             left: 0;
             width: 100%;
-            height: 2px;
-            background-color: #444;
-            z-index: 4;
-        }
-
-        /* =========================================
-           Activity 彈窗與六張圖層設定
-           ========================================= */
-        #activity-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(255, 255, 255, 0.85); /* 半透明白底覆蓋 */
-            z-index: 20000; /* 超高層級，保證蓋住所有場景 */
-            opacity: 0;
-            pointer-events: none; /* 隱藏時不能點擊 */
-            transition: opacity 0.5s ease;
-        }
-
-        #activity-popup.show-popup {
-            opacity: 1;
-            pointer-events: auto; /* 顯示時恢復點擊 */
-        }
-
-        .popup-layer {
-            position: absolute;
-            opacity: 0;
-            transform: scale(0.8); /* 一開始縮小一點，出現時會有放大的動態感 */
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            cursor: pointer;
-            pointer-events: none; 
-        }
-
-        /* 圖片出現時的動畫狀態 */
-        .popup-layer.layer-visible {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: auto; /* 出現後才能被點擊 */
-        }
-
-        /* --- 套用你設定好的六張圖片專屬位置與大小 --- */
-        
-        /* 第 1 張 (最上層，最先被點擊) */
-        #pop-layer1 { 
-            z-index: 16; 
-            top: 16%;   
-            left: 40%;  
-            width: 27%; 
-        }
-
-        /* 第 2 張 */
-        #pop-layer2 { 
-            z-index: 15; 
-            top: 40%; 
-            left: 27%; 
-            width: 35%; 
-        }
-
-        /* 第 3 張 */
-        #pop-layer3 { 
-            z-index: 14; 
-            top: 23%; 
-            left: 60%; 
-            width: 23%; 
-        }
-
-        /* 第 4 張 */
-        #pop-layer4 { 
-            z-index: 13; 
-            top: 65%; 
-            left: 10%; 
-            width: 25%; 
-        }
-
-        /* 第 5 張 */
-        #pop-layer5 { 
-            z-index: 12; 
-            top: 50%; 
-            left: 60%; 
-            width: 20%; 
-        }
-        
-        /* 第 6 張 (最底層) */
-        #pop-layer6 { 
-            z-index: 11; 
-            top: 30%; 
-            left: 18%; 
-            width: 20%; 
+            height: 2px; 
+            background-color: #444; 
+            z-index: 4; 
         }
 
     </style>
 </head>
 <body>
 
+    <!-- UI 導覽列 -->
     <div class="ui-header">
         <a href="index.html?skip=true" class="home-btn">
             <img src="firstpic/home.png" alt="Home">
@@ -340,21 +290,19 @@
 
         <div class="menu-container" id="menuContainer">
             <div class="hamburger-icon" onclick="toggleMenu()">
-                
                 <div class="lines-wrapper">
                     <span></span>
                     <span></span>
                     <span></span>
                 </div>
-
                 <img src="firstpic/hover.png" alt="Menu Hover" class="hover-img">
-                
             </div>
 
             <div class="menu-list" id="menuList">
                 <a href="bookri.html">關於</a>
                 <a href="bookle.html">周邊</a>
                 <a href="#" id="obj-activity" class="obj-container">活動</a>
+                
                 <div id="activity-popup">
                     <img class="popup-layer" id="pop-layer6" src="thirdpic/6.png">
                     <img class="popup-layer" id="pop-layer5" src="thirdpic/5.png">
@@ -363,25 +311,28 @@
                     <img class="popup-layer" id="pop-layer2" src="thirdpic/2.png">
                     <img class="popup-layer" id="pop-layer1" src="thirdpic/1.png">
                 </div>
+                
                 <a href="calender.html">品牌</a>
                 <a href="computer.html">地圖</a>
             </div>
         </div>
     </div>
 
+    <!-- 遊戲區域 -->
     <div id="gameArea">
-        <div id="ground"></div>
+        <div id="ground"></div> 
         <img id="dino" src="https://github.com/yen143/u/blob/main/walk_1.gif?raw=true" alt="dino">
         <img id="obstacle" src="https://github.com/yen143/u/blob/main/Trafficcone.png?raw=true" alt="traffic cone"> 
-        <img id="cloud1" class="cloud near" src="https://github.com/yen143/u/blob/main/flycat1.png?raw=true" alt="cloud">
-        <img id="cloud2" class="cloud far" src="https://github.com/yen143/u/blob/main/flycat1.png?raw=true" alt="cloud">
-        
+        <img id="cloud1" class="cloud near" src="https://github.com/yen143/u/blob/main/flycat1.png?raw=true" >
+        <img id="cloud2" class="cloud far" src="https://github.com/yen143/u/blob/main/flycat1.png?raw=true" >
         <div id="scoreDisplay">SCORE: 000000</div>
-        <div id="startMessage">按空白鍵開始 (Press Space)</div>
+        <div id="startMessage">click to start</div>
     </div>
 
     <script>
-        // --- 選單開關邏輯 ---
+        // =========================================
+        // UI 選單與彈窗互動邏輯
+        // =========================================
         function toggleMenu() {
             const menuList = document.getElementById('menuList');
             const menuContainer = document.getElementById('menuContainer');
@@ -400,57 +351,91 @@
             }
         });
 
-        // --- 遊戲邏輯 (保持不變) ---
+        const btnActivity = document.getElementById('obj-activity');
+        const activityPopup = document.getElementById('activity-popup');
+        
+        const popLayers = [
+            document.getElementById('pop-layer6'),
+            document.getElementById('pop-layer5'),
+            document.getElementById('pop-layer4'),
+            document.getElementById('pop-layer3'),
+            document.getElementById('pop-layer2'),
+            document.getElementById('pop-layer1')
+        ];
+
+        btnActivity.addEventListener('click', function(e) {
+            e.preventDefault(); 
+            activityPopup.classList.add('show-popup'); 
+            
+            popLayers.forEach((layer, index) => {
+                setTimeout(() => {
+                    layer.classList.add('layer-visible');
+                }, 300 + (index * 150)); 
+            });
+        });
+
+        popLayers.forEach((layer, index) => {
+            layer.addEventListener('click', function() {
+                this.classList.remove('layer-visible');
+                
+                if (index === 0) {
+                    setTimeout(() => {
+                        activityPopup.classList.remove('show-popup');
+                    }, 400); 
+                }
+            });
+        });
+
+
+        // =========================================
+        // 遊戲核心邏輯 (完全保留你的原始設定)
+        // =========================================
         const dino = document.getElementById('dino');
         const obstacle = document.getElementById('obstacle');
         const startMessage = document.getElementById('startMessage');
-        const scoreDisplay = document.getElementById('scoreDisplay');
+        const scoreDisplay = document.getElementById('scoreDisplay');  
         const cloud1 = document.getElementById('cloud1');
         const cloud2 = document.getElementById('cloud2');
+
+        dino.style.bottom = "20px";
 
         let isJumping = false;
         let gameOver = false;
         let gameStarted = false;
-        let obstacleX = -50; 
-        let score = 0;
-        let scoreInterval; 
-
+        let obstacleX = -50;  // 障礙物從左邊開始移動
+        let score = 0;  
+        
         let cloud1X = 0;
         let cloud2X = 0;
         let cloud1Y = 0;
         let cloud2Y = 0;
 
-        dino.style.bottom = "20px";
-        scoreDisplay.innerText = `SCORE: ${score.toString().padStart(6, '0')}`;
+        scoreDisplay.innerText = `SCORE: ${score.toString().padStart(5, '0')}`;
 
         function startGame() {
             if (gameStarted) return;
-            gameStarted = true;
-            gameOver = false;
-            score = 0; 
-            obstacleX = -50; 
 
-            startMessage.style.display = 'none';
-            scoreDisplay.style.display = 'block';
+            gameStarted = true;
+            startMessage.style.display = 'none';  
+            scoreDisplay.style.display = 'block'; 
             cloud1.style.display = "block";
             cloud2.style.display = "block";
-
-            cloud1X = 800 * 0.2;
-            cloud2X = 800 * 0.4;
-
+          
+            cloud1X = window.innerWidth * 0.2;
+            cloud2X = window.innerWidth * 0.4;
+          
             moveObstacle();
             moveClouds();
             startScoreTimer();
         }
 
         function startScoreTimer() {
-            if (scoreInterval) clearInterval(scoreInterval);
-            scoreInterval = setInterval(() => {
-                if (!gameOver) {
-                    score += 10;
-                    scoreDisplay.innerText = `SCORE: ${score.toString().padStart(6, '0')}`;
+            setInterval(() => {
+                if (!gameOver) {  
+                    score += 10;  
+                    scoreDisplay.innerText = `SCORE: ${score.toString().padStart(5, '0')}`;  
                 }
-            }, 1000); 
+            }, 1000);  
         }
 
         function jump() {
@@ -459,27 +444,28 @@
 
             let jumpHeight = 0;
             const up = setInterval(() => {
-                if (jumpHeight < 100) { 
-                    jumpHeight += 5; 
-                    dino.style.bottom = (20 + jumpHeight) + "px";
+                if (jumpHeight < 90) {  
+                    jumpHeight += 10;
+                    dino.style.bottom = 20 + jumpHeight + "px";
                 } else {
                     clearInterval(up);
                     const down = setInterval(() => {
                         if (jumpHeight > 0) {
-                            jumpHeight -= 5;
-                            dino.style.bottom = (20 + jumpHeight) + "px";
+                            jumpHeight -= 4;
+                            dino.style.bottom = 20 + jumpHeight + "px";
                         } else {
                             clearInterval(down);
                             isJumping = false;
-                            dino.style.bottom = "20px"; 
                         }
                     }, 20);
                 }
             }, 20);
         }
 
-        document.addEventListener("keydown", e => {
-            if (e.code === "Space") { 
+        // 鍵盤觸發
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault(); // 避免空白鍵往下捲動
                 if (!gameStarted) {
                     startGame();
                 } else {
@@ -487,13 +473,29 @@
                 }
             }
         });
-        
-        startMessage.addEventListener("click", startGame);
+
+        // 滑鼠點擊觸發
+        document.addEventListener('mousedown', (e) => {
+            if (e.button === 0) {
+                // 確保點擊的不是右上角的選單，才觸發跳躍
+                if (!document.getElementById('menuContainer').contains(e.target)) {
+                    if (!gameStarted) {
+                        startGame();
+                    } else {
+                        jump();
+                    }
+                }
+            }
+        });
+
+        // 點擊 "click to start" 也能開始遊戲
+        startMessage.addEventListener('click', startGame);
 
         function moveClouds() {
             if (gameOver) return;
-            cloud1X -= 1; 
-            cloud2X -= 0.5; 
+
+            cloud1X -= 1;
+            cloud2X -= 0.5;
             cloud1Y = 50 + Math.sin(Date.now() / 500) * 10;
             cloud2Y = 30 + Math.sin(Date.now() / 700) * 8;
 
@@ -504,82 +506,39 @@
 
             if (cloud1X < -100) cloud1X = 800;
             if (cloud2X < -100) cloud2X = 800;
+
             requestAnimationFrame(moveClouds);
         }
 
         function moveObstacle() {
             if (gameOver) return;
-            obstacleX += 8; 
-            obstacle.style.left = obstacleX + "px";
 
-            if (obstacleX > 800) obstacleX = -50;
+            obstacleX += 10;  // 每幀向右移動
+            obstacle.style.left = obstacleX + "px"; 
 
-            const dinoBottom = parseInt(dino.style.bottom);
-            const dinoLeft = 800 - 50 - 50; 
-            const dinoRight = 800 - 50; 
+            // 以 800 (遊戲框寬度) 作為障礙物重生的邊界，避免等太久
+            if (obstacleX > 800) {
+                obstacleX = -50;
+            }
+          
+            const dinoBottom = parseInt(dino.style.bottom) || 20; 
+            const dinoLeft = parseInt(getComputedStyle(dino).left);
+            const dinoRight = dinoLeft + 50;  
+            
             const obstacleLeft = obstacleX;
-            const obstacleRight = obstacleX + 50;
+            const obstacleRight = obstacleLeft + 50;  
 
-            const horizontalCollision = (obstacleRight > dinoLeft) && (obstacleLeft < dinoRight);
+            const horizontalCollision = obstacleRight > dinoLeft && obstacleLeft < dinoRight;
             const verticalCollision = dinoBottom < 60; 
 
             if (horizontalCollision && verticalCollision) {
                 gameOver = true;
-                clearInterval(scoreInterval); 
-                setTimeout(() => {
-                    alert(`遊戲結束！ 你的分數是: ${score}`);
-                    location.reload(); 
-                }, 10);
+                alert(`遊戲結束！ 你的分數是: ${score}`);
+                location.reload(); 
                 return;
             }
             requestAnimationFrame(moveObstacle);
         }
-
-        // =========================================
-        // Activity 彈窗互動邏輯
-        // =========================================
-        const btnActivity = document.getElementById('obj-activity');
-        const activityPopup = document.getElementById('activity-popup');
-        
-        // 按照 6 到 1 的順序排好，方便等一下「依序發牌」
-        const popLayers = [
-            document.getElementById('pop-layer6'),
-            document.getElementById('pop-layer5'),
-            document.getElementById('pop-layer4'),
-            document.getElementById('pop-layer3'),
-            document.getElementById('pop-layer2'),
-            document.getElementById('pop-layer1')
-        ];
-
-        // 1. 點擊 activity 按鈕：打開彈窗並依序顯示圖片
-        btnActivity.addEventListener('click', function(e) {
-            e.preventDefault(); // 防止網址跳轉
-            activityPopup.classList.add('show-popup'); // 背景淡入
-            
-            // 延遲發牌動畫 (每隔 0.15 秒出現一張，6 -> 5 -> 4 -> 3 -> 2 -> 1)
-            popLayers.forEach((layer, index) => {
-                setTimeout(() => {
-                    layer.classList.add('layer-visible');
-                }, 300 + (index * 150)); 
-            });
-        });
-
-        // 2. 點擊圖片：讓它消失。如果是最後一張 (6.png)，就關閉整個彈窗
-        popLayers.forEach((layer, index) => {
-            layer.addEventListener('click', function() {
-                // 點擊後把自己隱藏
-                this.classList.remove('layer-visible');
-                
-                // 檢查是不是點到 6.png (在陣列裡 index 是 0)
-                if (index === 0) {
-                    // 等 6.png 縮小的動畫跑完 (約 0.4秒) 後，關閉整個彈窗背景
-                    setTimeout(() => {
-                        activityPopup.classList.remove('show-popup');
-                    }, 400); 
-                }
-            });
-        });
-
     </script>
 </body>
 </html>

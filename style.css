@@ -290,7 +290,7 @@
         #btn-greenma { cursor: pointer; pointer-events: auto; }
         #txt-greenma { width: 300px; top: -100px; left: -200px; }
         #btn-bag { cursor: pointer; pointer-events: auto; z-index: 15; }
-        #txt-bag { top: -120px; right: 0px; }
+        #txt-bag { top: -250px; right: 15px; }
         .bubble-show { opacity: 1; }
 
         /* === 場景 4：Wednesday === */
